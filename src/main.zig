@@ -1,19 +1,26 @@
 const std = @import("std");
+const ray = @cImport({
+    @cInclude("raylib.h");
+});
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    std.debug.print("Hellow World!\n", .{});
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    // Modify from raylib  Basic window example in c:
+    // https://github.com/raysan5/raylib/blob/master/examples/core/core_basic_window.c
+    ray.InitWindow(800, 450, "Hello Raylib");
+    defer {
+        ray.CloseWindow();
+        std.debug.print("bye.\n", .{});
+    }
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    while (!ray.WindowShouldClose()) {
+        ray.BeginDrawing();
+        defer ray.EndDrawing();
 
-    try bw.flush(); // don't forget to flush!
+        ray.ClearBackground(ray.BLACK);
+        ray.DrawText("Hi Raylib", 250, 250, 50, ray.WHITE);
+    }
 }
 
 test "simple test" {
