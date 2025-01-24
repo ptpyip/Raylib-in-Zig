@@ -35,29 +35,27 @@ zig init
 ```
 
 
-### 3. Clone raylib
-Reminder to install necessary dependency for raylib (see https://github.com/raysan5/raylib/wiki).
+### 3. Fetch raylib package
+First, install necessary dependency for raylib (see https://github.com/raysan5/raylib/wiki).
 
-Clone the raylib repo to the `./lib` directory, or anywhere you like, and make sure it is visible under `./lib` by copying or using soft links. \
-As we are going to build the program with raylib from scratch, there is no need to install raylib.
-```bash
-cd ./lib
-git clone https://github.com/raysan5/raylib.git
+Second, fetch raylib package using `zig fetch`, where any repo contains a `build.zig` is consider a package. Fetching copies a package into the global cache and print its hash. 
+
+```zig
+zig fetch https://github.com/raysan5/raylib/archive/refs/tags/5.5.tar.gz
 ```
-
-If you cloned this repo, you can build and run the program using `zig build run`.
-
-Note: The name of the `./lib` directory can be changed as long as you change the `build.zig.zon` file as well. I am not sure about the best practice for Zig (maybe none?). Feel free to change it to other names you prefer for a Zig project like `./dep`.
+This command print the hash value for the next step. 
 
 ### 4. Add raylib as a dependency
-Modify the `build.zig.zon` file to add raylib as a dependency. This is essential for the build system (and the LSP, I guess?) to be able to recognize the raylib source code.
+Modify the `build.zig.zon` file to add raylib as a dependency. This is essential for the build system (and the LSP, I guess?) to be able to recognize the raylib source code. 
 
 ```zig
 // build.zig.zon
 
 .dependencies = .{
-    .raylib = .{ .path = "./lib/raylib/" },    
-    // syntax: .<lib_name> = .{ .path = <relative_path_to_source_code> }
+    .raylib = .{
+        .url = "https://github.com/raysan5/raylib/archive/refs/tags/5.5.tar.gz", // the url for the source code
+        .hash = "1220d93782859726c2c46a05450615b7edfc82b7319daac50cbc7c3345d660b022d7", // obtained from `zig fetch`
+    },
 }
 ```
 
